@@ -24,7 +24,7 @@ module.exports = function (client) {
          * @info General databasing, which sets the userinto the database if he types something
          */
         function databasing(rankuser) {
-            if(rankuser.bot) return console.log("GOTTA IGNORE BOT")
+            //if(rankuser && rankuser.bot) return console.log("GOTTA IGNORE BOT")
             client.points.ensure(rankuser ? `${message.guild.id}-${rankuser.id}` : `${message.guild.id}-${message.author.id}`, {
                 user: rankuser ? rankuser.id : message.author.id,
                 usertag: rankuser ? rankuser.tag : message.author.tag,
@@ -254,8 +254,8 @@ module.exports = function (client) {
              */
             try {
                 let rankuser = the_rankuser ? the_rankuser : message.mentions.users.first() ? message.mentions.users.first() : args[0] ? args[0].length == 18 ? message.guild.members.cache.get(args[0]).user : message.guild.members.cache.find(u => u.user.username.toLowerCase().includes(String(args[0]).toLowerCase())).user : message.author
-                if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
-                if(rankuser.bot) return message.reply("NO BOTS!");
+                if (!rankuser) return message.reply("PLEASE ADD A RANKUSER!");
+                // if(rankuser.bot) return message.reply("NO BOTS!");
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
                 databasing(rankuser);
@@ -396,10 +396,10 @@ module.exports = function (client) {
                  * GET the Rank User
                  * @info you can tag him
                  */
-                if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
+                if (!args[0]) return message.reply("PLEASE ADD A RANKUSER!");
                 let rankuser = message.mentions.users.first();
-                if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
-                if(rankuser.bot) return message.reply("NO BOTS!");
+                if (!rankuser) return message.reply("PLEASE ADD A RANKUSER!");
+                // if(rankuser.bot) return message.reply("NO BOTS!");
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
                 databasing(rankuser);
@@ -407,7 +407,7 @@ module.exports = function (client) {
                 client.points.set(key, Number(args[1]), `xpcounter`); //set points to 0
                 const embed = new Discord.MessageEmbed()
                 .setColor(embedcolor)
-                .setTitle(`Successfully set XP COUNTER to \`${args[1]}x\` for: \`${rankuser.tag}\``)
+                .setDescription(`Successfully set XP COUNTER to \`${args[1]}x\` for: \`${rankuser.tag}\``)
                 message.reply(embed);
             } catch (error) {
                 console.log(error.stack)
@@ -424,10 +424,10 @@ module.exports = function (client) {
                  * GET the Rank User
                  * @info you can tag him
                  */
-                if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
+                if (!args[0]) return message.reply("PLEASE ADD A RANKUSER!");
                 let rankuser = message.mentions.users.first();
-                if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
-                if(rankuser.bot) return message.reply("NO BOTS!");
+                if (!rankuser) return message.reply("PLEASE ADD A RANKUSER!");
+                // if(rankuser.bot) return message.reply("NO BOTS!");
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
                 databasing(rankuser);
@@ -472,7 +472,7 @@ module.exports = function (client) {
 
                 const embed = new Discord.MessageEmbed()
                     .setColor(embedcolor)
-                    .setTitle(`Successfully added \`${toaddpoints} Points\` to: \`${rankuser.tag}\``)
+                    .setDescription(`Successfully added \`${toaddpoints} Points\` to: \`${rankuser.tag}\``)
                 message.reply(embed);
                 rank(rankuser); //also sending the rankcard
             } catch (error) {
@@ -487,10 +487,10 @@ module.exports = function (client) {
                  * GET the Rank User
                  * @info you can tag him
                  */
-                if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
+                if (!args[0]) return message.reply("PLEASE ADD A RANKUSER!");
                 let rankuser = message.mentions.users.first();
-                if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
-                if(rankuser.bot) return message.reply("NO BOTS!");
+                if (!rankuser) return message.reply("PLEASE ADD A RANKUSER!");
+                // if(rankuser.bot) return message.reply("NO BOTS!");
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
                 databasing(rankuser);
@@ -530,7 +530,7 @@ module.exports = function (client) {
 
                 const embed = new Discord.MessageEmbed()
                     .setColor(embedcolor)
-                    .setTitle(`Successfully set \`${toaddpoints} Points\` to: \`${rankuser.tag}\``)
+                    .setDescription(`Successfully set \`${toaddpoints} Points\` to: \`${rankuser.tag}\``)
                 message.channel.send(embed);
                 rank(rankuser); //also sending the rankcard
             } catch (error) {
@@ -545,10 +545,10 @@ module.exports = function (client) {
                  * GET the Rank User
                  * @info you can tag him
                  */
-                if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
+                if (!args[0]) return message.reply("PLEASE ADD A RANKUSER!");
                 let rankuser = message.mentions.users.first();
-                if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
-                if(rankuser.bot) return message.reply("NO BOTS!");
+                if (!rankuser) return message.reply("PLEASE ADD A RANKUSER!");
+                // if(rankuser.bot) return message.reply("NO BOTS!");
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
                 databasing(rankuser);
@@ -597,7 +597,7 @@ module.exports = function (client) {
 
                 const embed = new Discord.MessageEmbed()
                     .setColor(embedcolor)
-                    .setTitle(`Successfully removed \`${amount} Points\` from: \`${rankuser.tag}\``)
+                    .setDescription(`Successfully removed \`${amount} Points\` from: \`${rankuser.tag}\``)
                 message.reply(embed);
                 rank(rankuser); //also sending the rankcard
             } catch (error) {
@@ -615,10 +615,10 @@ module.exports = function (client) {
                  * GET the Rank User
                  * @info you can tag him
                  */
-                if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
+                if (!args[0]) return message.reply("PLEASE ADD A RANKUSER!");
                 let rankuser = message.mentions.users.first();
-                if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
-                if(rankuser.bot) return message.reply("NO BOTS!");
+                if (!rankuser) return message.reply("PLEASE ADD A RANKUSER!");
+                // if(rankuser.bot) return message.reply("NO BOTS!");
 
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
@@ -645,10 +645,10 @@ module.exports = function (client) {
                     .setColor(embedcolor);
                 message.channel.send(rankuser, embed);
                 rank(rankuser); //also sending the rankcard
-                const embed = new Discord.MessageEmbed()
+                const sssembed = new Discord.MessageEmbed()
                 .setColor(embedcolor)
-                .setTitle(`Successfully added ${args[1]} Levels to: \`${rankuser.tag}\``)
-                message.reply(embed);
+                .setDescription(`Successfully added ${args[1]} Levels to: \`${rankuser.tag}\``)
+                message.reply(sssembed);
             } catch (error) {
                 console.log(error.stack)
                 message.reply("PLEASE ADD A RANKUSER!");
@@ -661,10 +661,10 @@ module.exports = function (client) {
                  * GET the Rank User
                  * @info you can tag him
                  */
-                if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
+                if (!args[0]) return message.reply("PLEASE ADD A RANKUSER!");
                 let rankuser = message.mentions.users.first();
-                if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
-                if(rankuser.bot) return message.reply("NO BOTS!");
+                if (!rankuser) return message.reply("PLEASE ADD A RANKUSER!");
+                // if(rankuser.bot) return message.reply("NO BOTS!");
 
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
@@ -680,7 +680,7 @@ module.exports = function (client) {
 
                 client.points.set(key, 400, `neededpoints`) //set neededpoints to 0 for beeing sure
                 //add 100 for each divideable 4
-                for (let i = 0; i < counter; i++) {
+                for (let i = 0; i < Math.floor(counter); i++) {
                     client.points.math(key, `+`, 100, `neededpoints`)
                 }
                 const newneededPoints = client.points.get(key, `neededpoints`); //get NEW needed Points
@@ -695,10 +695,10 @@ module.exports = function (client) {
                     .setColor(embedcolor);
                 message.channel.send(rankuser, embed);
                 rank(rankuser); //also sending the rankcard
-                const embed = new Discord.MessageEmbed()
+                const sssembed = new Discord.MessageEmbed()
                 .setColor(embedcolor)
-                .setTitle(`Successfully set \`${rankuser.tag}\` to Level: ${args[1]}`)
-                message.reply(embed);
+                .setDescription(`Successfully set \`${rankuser.tag}\` to Level: ${args[1]}`)
+                message.reply(sssembed);
             } catch (error) {
                 console.log(error.stack)
                 message.reply("PLEASE ADD A RANKUSER!");
@@ -711,10 +711,10 @@ module.exports = function (client) {
                  * GET the Rank User
                  * @info you can tag him
                  */
-                if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
+                if (!args[0]) return message.reply("PLEASE ADD A RANKUSER!");
                 let rankuser = message.mentions.users.first();
-                if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
-                if(rankuser.bot) return message.reply("NO BOTS!");
+                if (!rankuser) return message.reply("PLEASE ADD A RANKUSER!");
+                // if(rankuser.bot) return message.reply("NO BOTS!");
 
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
@@ -729,11 +729,12 @@ module.exports = function (client) {
                     newLevel = client.points.get(key, `level`); //get current NEW level
                     if(newLevel < 1) client.points.set(key, 1 ,`level`); //if smaller then 1 set to 1
                 }
-                let counter = Number(newLevel) / 4;
+                snewLevel = client.points.get(key, `level`); //get current NEW level
+                let counter = Number(snewLevel) / 4;
 
                 client.points.set(key, 400, `neededpoints`) //set neededpoints to 0 for beeing sure
                 //add 100 for each divideable 4
-                for (let i = 0; i < counter; i++) {
+                for (let i = 0; i < Math.floor(counter); i++) {
                     client.points.math(key, `+`, 100, `neededpoints`)
                 }
                 const newneededPoints = client.points.get(key, `neededpoints`); //get NEW needed Points
@@ -748,10 +749,10 @@ module.exports = function (client) {
                     .setColor(embedcolor);
                 message.channel.send(rankuser, embed);
                 rank(rankuser); //also sending the rankcard
-                const embed = new Discord.MessageEmbed()
+                const sssembed = new Discord.MessageEmbed()
                 .setColor(embedcolor)
-                .setTitle(`Successfully removed \`${args[0]}\` Levels from:  \`${rankuser.tag}\``)
-                message.reply(embed);
+                .setDescription(`Successfully removed \`${args[0]}\` Levels from:  \`${rankuser.tag}\``)
+                message.reply(sssembed);
             } catch (error) {
                 console.log(error.stack)
                 message.reply("PLEASE ADD A RANKUSER!");
@@ -767,10 +768,10 @@ module.exports = function (client) {
                  * GET the Rank User
                  * @info you can tag him
                  */
-                if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
+                if (!args[0]) return message.reply("PLEASE ADD A RANKUSER!");
                 let rankuser = message.mentions.users.first();
-                if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
-                if(rankuser.bot) return message.reply("NO BOTS!");
+                if (!rankuser) return message.reply("PLEASE ADD A RANKUSER!");
+                // if(rankuser.bot) return message.reply("NO BOTS!");
                 
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
@@ -790,10 +791,10 @@ module.exports = function (client) {
                     .setColor(embedcolor);
                 message.channel.send(rankuser, embed);
                 rank(rankuser); //also sending the rankcard
-                const embed = new Discord.MessageEmbed()
+                const sssembed = new Discord.MessageEmbed()
                 .setColor(embedcolor)
-                .setTitle(`Successfully resetted ranking from:  \`${rankuser.tag}\``)
-                message.reply(embed);
+                .setDescription(`Successfully resetted ranking from:  \`${rankuser.tag}\``)
+                message.reply(sssembed);
             } catch (error) {
                 console.log(error.stack)
                 message.reply("PLEASE ADD A RANKUSER!");
@@ -813,7 +814,7 @@ module.exports = function (client) {
             }
             const embed = new Discord.MessageEmbed()
             .setColor(embedcolor)
-            .setTitle(`Successfully registered everyone`)
+            .setDescription(`Successfully registered everyone`)
             message.reply(embed);
         }
 
@@ -829,7 +830,7 @@ module.exports = function (client) {
             }
             const embed = new Discord.MessageEmbed()
             .setColor(embedcolor)
-            .setTitle(`Successfully resetted everyone`)
+            .setDescription(`Successfully resetted everyone`)
             message.reply(embed);
         }
 
@@ -847,7 +848,7 @@ module.exports = function (client) {
             }
             const embed = new Discord.MessageEmbed()
             .setColor(embedcolor)
-            .setTitle(`Successfully added ${args[0]} Points to  everyone`)
+            .setDescription(`Successfully added ${args[0]} Points to  everyone`)
             message.reply(embed);
         }
 
