@@ -425,11 +425,11 @@ module.exports = function (client) {
         
         function setglobalxpcounter(){
             try {
-                if (!args[1]) return message.reply("PLEASE ADD POINTS TO ADD! Usage: `setglobalxpcounter 2`");
-                client.points.set(message.guild.id, Number(args[1]), `setglobalxpcounter`); //set points to 0
+                if (!args[0]) return message.reply("PLEASE ADD POINTS TO ADD! Usage: `setglobalxpcounter 2`");
+                client.points.set(message.guild.id, Number(args[0]), `setglobalxpcounter`); //set points to 0
                 const embed = new Discord.MessageEmbed()
                 .setColor(embedcolor)
-                .setDescription(`Successfully set GLOBAL XP COUNTER to \`${args[1]}x\` for: \`${message.guild.name}\``)
+                .setDescription(`Successfully set GLOBAL XP COUNTER to \`${args[0]}x\` for: \`${message.guild.name}\``)
                 message.reply(embed);
             } catch {
             }
