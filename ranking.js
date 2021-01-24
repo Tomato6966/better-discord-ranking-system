@@ -36,6 +36,7 @@ module.exports = function (client) {
                 oldmessage: "",
             });
             client.points.set(rankuser ? `${message.guild.id}-${rankuser.id}` : `${message.guild.id}-${message.author.id}`, rankuser ? rankuser.tag : message.author.tag, `usertag`); //set the usertag with EVERY message, if he has nitro his tag might change ;)
+            client.points.set(message.guild.id, 1, `setglobalxpcounter`); //set points to 0
         }
         databasing();
 
@@ -67,6 +68,12 @@ module.exports = function (client) {
                 if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
                     setxpcounter();
                 break; 
+                    /////////////////////////////////
+                case `setglobalxpcounter`: 
+                if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
+                    setglobalxpcounter();
+                break; 
+                    /////////////////////////////////
                 case `addpoints`:
                     if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
                     addpoints();
@@ -161,8 +168,9 @@ module.exports = function (client) {
          * @info adding a random number rounded, between 1 and 5
          */
         function Giving_Ranking_Points(thekey, maxnumber) {
+            let setglobalxpcounter = client.points.get(message.guild.id, "setglobalxpcounter")
             if (!maxnumber) maxnumber = 5;
-            var randomnum = Math.floor(Math.random() * Number(maxnumber)) + 1;
+            var randomnum = ( Math.floor(Math.random() * Number(maxnumber)) + 1 ) * setglobalxpcounter;
             randomnum *= Number(client.points.get(key, `xpcounter`));
             randomnum = Number(Math.floor(randomnum));
 
@@ -414,7 +422,18 @@ module.exports = function (client) {
                 message.reply("PLEASE ADD A RANKUSER!");
             }
         }
-
+        
+        function setglobalxpcounter(){
+            try {
+                if (!args[1]) return message.reply("PLEASE ADD POINTS TO ADD! Usage: `setglobalxpcounter 2`");
+                client.points.set(message.guild.id, Number(args[1]), `setglobalxpcounter`); //set points to 0
+                const embed = new Discord.MessageEmbed()
+                .setColor(embedcolor)
+                .setDescription(`Successfully set GLOBAL XP COUNTER to \`${args[1]}x\` for: \`${message.guild.name}\``)
+                message.reply(embed);
+            } catch {
+            }
+        }
         /**
          * @info this function "BLOCK" is for managing the POINTS, adding, setting and removing! PER USER
          */
@@ -914,8 +933,8 @@ module.exports = function (client) {
                         inline: true
                     },
                     {
-                        name: "\u200b",
-                        value: "\u200b",
+                        name: "`setglobalxpcounter <AMOUNT>`",
+                        value: ">>> *Sets the global xp counter for this guild, standard 1*",
                         inline: true
                     },
                     {
