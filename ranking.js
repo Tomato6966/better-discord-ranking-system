@@ -4,7 +4,7 @@ const Discord = require("discord.js");
 const prefix = config.PREFIX;
 const embedcolor = config.embedcolor;
 const maximum_leaderboard = Number(config.maximum_leaderboard); //maximum 50 users for the leaderboard!
-//Coded by Tomato#6966!// 
+
 module.exports = function (client) {
     const description = {
         name: "RANKING",
@@ -22,11 +22,13 @@ module.exports = function (client) {
         /**
          * databasing
          * @info General databasing, which sets the userinto the database if he types something
-         *///Coded by Tomato#6966!// 
+         */
         function databasing(rankuser) {
+            if(rankuser.bot) return console.log("GOTTA IGNORE BOT")
             client.points.ensure(rankuser ? `${message.guild.id}-${rankuser.id}` : `${message.guild.id}-${message.author.id}`, {
                 user: rankuser ? rankuser.id : message.author.id,
                 usertag: rankuser ? rankuser.tag : message.author.tag,
+                xpcounter: 1,
                 guild: message.guild.id,
                 points: 0,
                 neededpoints: 400,
@@ -61,61 +63,65 @@ module.exports = function (client) {
                     leaderboard();
                     break;
                     /////////////////////////////////
+                case `setxpcounter`: 
+                if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
+                    setxpcounter();
+                break; 
                 case `addpoints`:
-                    if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You are not allowed to run this cmd!")
+                    if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
                     addpoints();
                     break;
                     /////////////////////////////////
                 case `setpoints`:
-                    if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You are not allowed to run this cmd!")
+                    if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
 
                     setpoints();
                     break;
                     /////////////////////////////////
                 case `removepoints`:
-                    if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You are not allowed to run this cmd!")
+                    if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
 
                     removepoints();
                     break;
                     /////////////////////////////////
                 case `addlevel`:
-                    if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You are not allowed to run this cmd!")
+                    if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
 
                     addlevel();
                     break;
                     /////////////////////////////////
                 case `setlevel`:
-                    if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You are not allowed to run this cmd!")
+                    if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
 
                     setlevel();
                     break;
                     /////////////////////////////////
                 case `removelevel`:
-                    if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You are not allowed to run this cmd!")
+                    if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
 
                     removelevel();
                     break;
                     /////////////////////////////////
                 case `resetranking`:
-                    if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You are not allowed to run this cmd!")
+                    if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
 
                     resetranking();
                     break;
                     /////////////////////////////////
                 case `registerall`:
-                    if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You are not allowed to run this cmd!")
+                    if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
 
                     registerall();
                     break;
                     /////////////////////////////////
                 case `addrandomall`:
-                    if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You are not allowed to run this cmd!")
+                    if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
 
                     addrandomall();
                     break;
                     /////////////////////////////////
                 case `resetrankingall`:
-                    if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You are not allowed to run this cmd!")
+                    if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
 
                     resetrankingall()
                     break;
@@ -152,11 +158,13 @@ module.exports = function (client) {
 
         /**
          * Giving Ranking Points
-         * @info adding a random number rounde//Coded by Tomato#6966!// d, between 1 and 5
+         * @info adding a random number rounded, between 1 and 5
          */
         function Giving_Ranking_Points(thekey, maxnumber) {
             if (!maxnumber) maxnumber = 5;
             var randomnum = Math.floor(Math.random() * Number(maxnumber)) + 1;
+            randomnum *= Number(client.points.get(key, `xpcounter`));
+            randomnum = Number(Math.floor(randomnum));
 
             const curPoints = client.points.get(thekey ? thekey : key, `points`);
             const neededPoints = client.points.get(thekey ? thekey : key, `neededpoints`);
@@ -242,15 +250,16 @@ module.exports = function (client) {
         function rank(the_rankuser) {
             /**
              * GET the Rank User
-             * @info you can either TAG him @USER, or add the ID 442355791412854784, or try to search his //Coded by Tomato#6966!// NAME for example: wished user: Tomato, u can simply type Toma
+             * @info you can tag him
              */
             try {
                 let rankuser = the_rankuser ? the_rankuser : message.mentions.users.first() ? message.mentions.users.first() : args[0] ? args[0].length == 18 ? message.guild.members.cache.get(args[0]).user : message.guild.members.cache.find(u => u.user.username.toLowerCase().includes(String(args[0]).toLowerCase())).user : message.author
                 if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
+                if(rankuser.bot) return message.reply("NO BOTS!");
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
                 databasing(rankuser);
-                //do some databasing//Coded by Tomato#6966!
+                //do some databasing
                 const filtered = client.points.filter(p => p.guild === message.guild.id).array();
                 const sorted = filtered.sort((a, b) => b.level - a.level || b.points - a.points);
                 const top10 = sorted.splice(0, message.guild.memberCount);
@@ -260,7 +269,7 @@ module.exports = function (client) {
                     try {
                         i++;
                         if (data.user === rankuser.id) break; //if its the right one then break it ;)
-                    } catch {//Coded by Tomato#6966!
+                    } catch {
                         i = `Error counting Rank`;
                         break;
                     }
@@ -381,6 +390,30 @@ module.exports = function (client) {
 
         }
 
+        function setxpcounter(){
+            try {
+            /**
+                 * GET the Rank User
+                 * @info you can tag him
+                 */
+                if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
+                let rankuser = message.mentions.users.first();
+                if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
+                if(rankuser.bot) return message.reply("NO BOTS!");
+                //Call the databasing function!
+                const key = `${message.guild.id}-${rankuser.id}`;
+                databasing(rankuser);
+                if (!args[1]) return message.reply("PLEASE ADD POINTS TO ADD! Usage: `setxpcounter @USER 2`");
+                client.points.set(key, Number(args[1]), `xpcounter`); //set points to 0
+                const embed = new Discord.MessageEmbed()
+                .setColor(embedcolor)
+                .setTitle(`Successfully set XP COUNTER to \`${args[1]}x\` for: \`${rankuser.tag}\``)
+                message.reply(embed);
+            } catch (error) {
+                console.log(error.stack)
+                message.reply("PLEASE ADD A RANKUSER!");
+            }
+        }
 
         /**
          * @info this function "BLOCK" is for managing the POINTS, adding, setting and removing! PER USER
@@ -389,11 +422,12 @@ module.exports = function (client) {
             try {
                 /**
                  * GET the Rank User
-                 * @info you can either TAG him @USER, or add the ID 442355791412854784, or try to search his NAME for example: wished user: Tomato, u can simply type Toma
+                 * @info you can tag him
                  */
                 if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
-                let rankuser = message.mentions.users.first() ? message.mentions.users.first() : args[0].length == 18 ? message.guild.members.cache.get(args[0]).user : message.guild.members.cache.find(u => u.user.username.toLowerCase().includes(String(args[0]).toLowerCase())).user;
+                let rankuser = message.mentions.users.first();
                 if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
+                if(rankuser.bot) return message.reply("NO BOTS!");
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
                 databasing(rankuser);
@@ -451,11 +485,12 @@ module.exports = function (client) {
             try {
                 /**
                  * GET the Rank User
-                 * @info you can either TAG him @USER, or add the ID 442355791412854784, or try to search his NAME for example: wished user: Tomato, u can simply type Toma
+                 * @info you can tag him
                  */
                 if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
-                let rankuser = message.mentions.users.first() ? message.mentions.users.first() : args[0].length == 18 ? message.guild.members.cache.get(args[0]).user : message.guild.members.cache.find(u => u.user.username.toLowerCase().includes(String(args[0]).toLowerCase())).user;
+                let rankuser = message.mentions.users.first();
                 if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
+                if(rankuser.bot) return message.reply("NO BOTS!");
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
                 databasing(rankuser);
@@ -508,11 +543,12 @@ module.exports = function (client) {
             try {
                 /**
                  * GET the Rank User
-                 * @info you can either TAG him @USER, or add the ID 442355791412854784, or try to search his NAME for example: wished user: Tomato, u can simply type Toma
+                 * @info you can tag him
                  */
                 if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
-                let rankuser = message.mentions.users.first() ? message.mentions.users.first() : args[0].length == 18 ? message.guild.members.cache.get(args[0]).user : message.guild.members.cache.find(u => u.user.username.toLowerCase().includes(String(args[0]).toLowerCase())).user;
+                let rankuser = message.mentions.users.first();
                 if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
+                if(rankuser.bot) return message.reply("NO BOTS!");
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
                 databasing(rankuser);
@@ -573,15 +609,16 @@ module.exports = function (client) {
         /**
          * @info this function "BLOCK" is for managing the LEVELS, adding, setting and removing! PER USER
          */
-        function addlevel() {//Coded by Tomato#6966!
+        function addlevel() {
             try {
                 /**
                  * GET the Rank User
-                 * @info you can either TAG him @USER, or add the ID 442355791412854784, or try to search his NAME for example: wished user: Tomato, u can simply type Toma
+                 * @info you can tag him
                  */
                 if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
-                let rankuser = message.mentions.users.first() ? message.mentions.users.first() : args[0].length == 18 ? message.guild.members.cache.get(args[0]).user : message.guild.members.cache.find(u => u.user.username.toLowerCase().includes(String(args[0]).toLowerCase())).user;
+                let rankuser = message.mentions.users.first();
                 if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
+                if(rankuser.bot) return message.reply("NO BOTS!");
 
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
@@ -608,6 +645,10 @@ module.exports = function (client) {
                     .setColor(embedcolor);
                 message.channel.send(rankuser, embed);
                 rank(rankuser); //also sending the rankcard
+                const embed = new Discord.MessageEmbed()
+                .setColor(embedcolor)
+                .setTitle(`Successfully added ${args[1]} Levels to: \`${rankuser.tag}\``)
+                message.reply(embed);
             } catch (error) {
                 console.log(error.stack)
                 message.reply("PLEASE ADD A RANKUSER!");
@@ -618,11 +659,12 @@ module.exports = function (client) {
             try {
                 /**
                  * GET the Rank User
-                 * @info you can either TAG him @USER, or add the ID 442355791412854784, or try to search his NAME for example: wished user: Tomato, u can simply type Toma
+                 * @info you can tag him
                  */
                 if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
-                let rankuser = message.mentions.users.first() ? message.mentions.users.first() : args[0].length == 18 ? message.guild.members.cache.get(args[0]).user : message.guild.members.cache.find(u => u.user.username.toLowerCase().includes(String(args[0]).toLowerCase())).user;
+                let rankuser = message.mentions.users.first();
                 if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
+                if(rankuser.bot) return message.reply("NO BOTS!");
 
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
@@ -653,34 +695,46 @@ module.exports = function (client) {
                     .setColor(embedcolor);
                 message.channel.send(rankuser, embed);
                 rank(rankuser); //also sending the rankcard
+                const embed = new Discord.MessageEmbed()
+                .setColor(embedcolor)
+                .setTitle(`Successfully set \`${rankuser.tag}\` to Level: ${args[1]}`)
+                message.reply(embed);
             } catch (error) {
                 console.log(error.stack)
                 message.reply("PLEASE ADD A RANKUSER!");
             }
         }
 
-        function addlevel() {
+        function removelevel() {
             try {
                 /**
                  * GET the Rank User
-                 * @info you can either TAG him @USER, or add the ID 442355791412854784, or try to search his NAME for example: wished user: Tomato, u can simply type Toma
+                 * @info you can tag him
                  */
                 if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
-                let rankuser = message.mentions.users.first() ? message.mentions.users.first() : args[0].length == 18 ? message.guild.members.cache.get(args[0]).user : message.guild.members.cache.find(u => u.user.username.toLowerCase().includes(String(args[0]).toLowerCase())).user;
+                let rankuser = message.mentions.users.first();
                 if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
+                if(rankuser.bot) return message.reply("NO BOTS!");
 
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
                 databasing(rankuser);
                 let newLevel = client.points.get(key, `level`);
-                if (!args[1]) return message.reply("Please add the amount of Levels you want to add to! Usage: addlevel @User 4");
+                if (!args[1]) return message.reply("Please add the amount of Levels you want to remove to! Usage: removelevel @User 4");
                 if (Number(args[1]) < 0) args[1] = 0;
                 for (let i = 0; i < Number(args[1]); i++) {
                     client.points.set(key, 0, `points`); //set points to 0
-                    client.points.inc(key, `level`); //add 1 to level
+                    client.points.dec(key, `level`); //add 1 to level
                     //HARDING UP!
                     newLevel = client.points.get(key, `level`); //get current NEW level
-                    if (newLevel % 4 === 0) client.points.math(key, `+`, 100, `neededpoints`)
+                    if(newLevel < 1) client.points.set(key, 1 ,`level`); //if smaller then 1 set to 1
+                }
+                let counter = Number(newLevel) / 4;
+
+                client.points.set(key, 400, `neededpoints`) //set neededpoints to 0 for beeing sure
+                //add 100 for each divideable 4
+                for (let i = 0; i < counter; i++) {
+                    client.points.math(key, `+`, 100, `neededpoints`)
                 }
                 const newneededPoints = client.points.get(key, `neededpoints`); //get NEW needed Points
                 const newPoints = client.points.get(key, `points`); //get current NEW points
@@ -690,10 +744,14 @@ module.exports = function (client) {
                     .setAuthor(`Ranking of:  ${rankuser.tag}`, rankuser.displayAvatarURL({
                         dynamic: true
                     }))
-                    .setDescription(`You've leveled up to Level: **\`${newLevel}\`**! (Points: \`${newPoints}\` / \`${newneededPoints}\`) `)
+                    .setDescription(`You've leveled down to Level: **\`${newLevel}\`**! (Points: \`${newPoints}\` / \`${newneededPoints}\`) `)
                     .setColor(embedcolor);
                 message.channel.send(rankuser, embed);
                 rank(rankuser); //also sending the rankcard
+                const embed = new Discord.MessageEmbed()
+                .setColor(embedcolor)
+                .setTitle(`Successfully removed \`${args[0]}\` Levels from:  \`${rankuser.tag}\``)
+                message.reply(embed);
             } catch (error) {
                 console.log(error.stack)
                 message.reply("PLEASE ADD A RANKUSER!");
@@ -707,12 +765,13 @@ module.exports = function (client) {
             try {
                 /**
                  * GET the Rank User
-                 * @info you can either TAG him @USER, or add the ID 442355791412854784, or try to search his NAME for example: wished user: Tomato, u can simply type Toma
+                 * @info you can tag him
                  */
                 if (!args[0]) message.reply("PLEASE ADD A RANKUSER!");
-                let rankuser = message.mentions.users.first() ? message.mentions.users.first() : args[0].length == 18 ? message.guild.members.cache.get(args[0]).user : message.guild.members.cache.find(u => u.user.username.toLowerCase().includes(String(args[0]).toLowerCase())).user;
+                let rankuser = message.mentions.users.first();
                 if (!rankuser) message.reply("PLEASE ADD A RANKUSER!");
-
+                if(rankuser.bot) return message.reply("NO BOTS!");
+                
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
                 databasing(rankuser);
@@ -731,6 +790,10 @@ module.exports = function (client) {
                     .setColor(embedcolor);
                 message.channel.send(rankuser, embed);
                 rank(rankuser); //also sending the rankcard
+                const embed = new Discord.MessageEmbed()
+                .setColor(embedcolor)
+                .setTitle(`Successfully resetted ranking from:  \`${rankuser.tag}\``)
+                message.reply(embed);
             } catch (error) {
                 console.log(error.stack)
                 message.reply("PLEASE ADD A RANKUSER!");
@@ -748,6 +811,10 @@ module.exports = function (client) {
                 let rankuser = message.guild.members.cache.get(allmembers[i]).user;
                 databasing(rankuser);
             }
+            const embed = new Discord.MessageEmbed()
+            .setColor(embedcolor)
+            .setTitle(`Successfully registered everyone`)
+            message.reply(embed);
         }
 
         function resetrankingall() {
@@ -760,6 +827,10 @@ module.exports = function (client) {
                 client.points.set(key, 400, `neededpoints`) //set neededpoints to 0 for beeing sure
                 client.points.set(key, "", `oldmessage`); //set old message to 0
             }
+            const embed = new Discord.MessageEmbed()
+            .setColor(embedcolor)
+            .setTitle(`Successfully resetted everyone`)
+            message.reply(embed);
         }
 
         function addrandomall() {
@@ -770,8 +841,14 @@ module.exports = function (client) {
                 //Call the databasing function!
                 let rankuser = message.guild.members.cache.get(allmembers[i]).user;
                 databasing(rankuser);
+                if(rankuser.bot) continue;
                 Giving_Ranking_Points(`${message.guild.id}-${rankuser.id}`, maxnum);
+                Giving_Ranking_Points(`${message.guild.id}-${message.author.id}`, maxnum);
             }
+            const embed = new Discord.MessageEmbed()
+            .setColor(embedcolor)
+            .setTitle(`Successfully added ${args[0]} Points to  everyone`)
+            message.reply(embed);
         }
 
 
@@ -793,8 +870,8 @@ module.exports = function (client) {
                         inline: true
                     },
                     {
-                        name: "\u200b",
-                        value: "\u200b",
+                        name: "`setxpcounter <@USER> <AMOUNT>`",
+                        value: ">>> *Changes the amount of how much to count, x1, x2, x3, ...*",
                         inline: true
                     },
 
@@ -831,7 +908,7 @@ module.exports = function (client) {
                     },
 
                     {
-                        name: "`resetranking <@User> <Amount>`",
+                        name: "`resetranking <@User>`",
                         value: ">>> *Resets the ranking of a User*",
                         inline: true
                     },
@@ -845,7 +922,7 @@ module.exports = function (client) {
                         value: "\u200b",
                         inline: true
                     },
-//Coded by Tomato#6966!
+
                     {
                         name: "`registerall`",
                         value: ">>> *Register everyone in the Server to the Database*",
