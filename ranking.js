@@ -3,7 +3,7 @@ const canvacord = require("canvacord");
 const Discord = require("discord.js");
 const prefix = config.PREFIX;
 const embedcolor = config.embedcolor;
-const maximum_leaderboard = Number(config.maximum_leaderboard); //maximum 50 users for the leaderboard!
+const maximum_leaderboard = config.maximum_leaderboard; //maximum 50 users for the leaderboard!
 
 module.exports = function (client) {
     const description = {
@@ -325,14 +325,18 @@ module.exports = function (client) {
             }
         }
 
-        function leaderboardembed() {
+                function leaderboardembed() {
             const filtered = client.points.filter(p => p.guild === message.guild.id).array();
             const sorted = filtered.sort((a, b) => b.level - a.level || b.points - a.points);
-            console.log();
             let embeds = [];
             let j = 0;
             let maxnum = maximum_leaderboard;
+            if(isNaN(maxnum)) {
+                console.log("maximum_leaderboard NOT A NUMBER")
+                maxnum = 50;
+            }
             if (maxnum > sorted.length) maxnum = sorted.length;
+            if(maxnum < 10) maxnum = 10;
             for (let i = 10; i <= maxnum; i += 10) {
                 const top = sorted.splice(i - 10, i);
                 const embed = new Discord.MessageEmbed()
@@ -355,6 +359,9 @@ module.exports = function (client) {
         async function leaderboard() {
             let currentPage = 0;
             const embeds = leaderboardembed();
+            if(embeds.length == 1){
+                return message.channel.send(embeds[0])
+            }
             const lbembed = await message.channel.send(
                 `**Current Page - ${currentPage + 1}/${embeds.length}**`,
                 embeds[currentPage]
@@ -394,8 +401,6 @@ module.exports = function (client) {
                     console.error(error);
                 }
             });
-
-
         }
 
         function setxpcounter(){
