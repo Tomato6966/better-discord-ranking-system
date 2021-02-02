@@ -327,22 +327,24 @@ module.exports = function (client) {
 
                 function leaderboardembed() {
             const filtered = client.points.filter(p => p.guild === message.guild.id).array();
+            let orilent;
             const sorted = filtered.sort((a, b) => b.level - a.level || b.points - a.points);
             let embeds = [];
             let j = 0;
-            let maxnum = maximum_leaderboard;
+            let maxnum = 50;
+            orilent = sorted.length;
             if(isNaN(maxnum)) {
                 console.log("maximum_leaderboard NOT A NUMBER")
-                maxnum = 50;
-            }
-            if (maxnum > sorted.length) maxnum = sorted.length;
+                maxnum = 50;}
+            if (maxnum > sorted.length) 
+                maxnum = sorted.length + (10 - Number(String(sorted.length/10).slice(2)));
             if(maxnum < 10) maxnum = 10;
             for (let i = 10; i <= maxnum; i += 10) {
-                const top = sorted.splice(i - 10, i);
+                const top = sorted.splice(0, 10);
                 const embed = new Discord.MessageEmbed()
                     .setTitle(`\`${message.guild.name}\` | Leaderboard`)
                     .setTimestamp()
-                    .setDescription(`Top ${i}/${maxnum} Ranking:`)
+                    .setDescription(`Top ${i<orilent?i:orilent}/${orilent} Ranking:`)
                     .setColor(embedcolor);
                 for (const data of top) {
                     j++;
