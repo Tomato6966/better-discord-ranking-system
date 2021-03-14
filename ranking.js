@@ -64,15 +64,15 @@ module.exports = function (client) {
                     leaderboard();
                     break;
                     /////////////////////////////////
-                case `setxpcounter`: 
+                case `setxpcounter`:
                 if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
                     setxpcounter();
-                break; 
+                break;
                     /////////////////////////////////
-                case `setglobalxpcounter`: 
+                case `setglobalxpcounter`:
                 if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
                     setglobalxpcounter();
-                break; 
+                break;
                     /////////////////////////////////
                 case `addpoints`:
                     if (!message.member.hasPermission("ADMINISTRATOR") || !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You are not allowed to run this cmd!")
@@ -183,16 +183,22 @@ module.exports = function (client) {
 
             function addingpoints(toaddpoints, leftpoints) {
                 if (toaddpoints >= leftpoints) {
+                    LEVELUP();
                     client.points.set(thekey ? thekey : key, 0, `points`); //set points to 0
                     client.points.inc(thekey ? thekey : key, `level`); //add 1 to level
-                    //HARDING UP!
-                    const newLevel = client.points.get(thekey ? thekey : key, `level`); //get current NEW level
+                     //get current NEW level
+                    const newLevel = client.points.get(thekey ? thekey : key, `level`);
+                    /**
+                     * HARDEN UP THE NEXT LEVEL UP
+                     * @info The neededpoints shall raise always, when the newLevel is divideable by 4, at levels: 4,8,12,16,20,24,28,32,36,40,44,...
+                     */
                     if (newLevel % 4 === 0) client.points.math(thekey ? thekey : key, `+`, 100, `neededpoints`)
 
                     const newneededPoints = client.points.get(thekey ? thekey : key, `neededpoints`); //get NEW needed Points
                     const newPoints = client.points.get(thekey ? thekey : key, `points`); //get current NEW points
 
                     addingpoints(toaddpoints - leftpoints, newneededPoints); //Ofc there is still points left to add so... lets do it!
+                    LEVELUP() //SEND LEVEL UP EMBED MESSAGE
                 } else {
                     client.points.math(thekey ? thekey : key, `+`, Number(toaddpoints), `points`)
                 }
@@ -211,29 +217,15 @@ module.exports = function (client) {
 
         /**
          * LEVELUP
-         * @info curPoints >= neededPoints | => 
+         * @info curPoints >= neededPoints | =>
          * @info if the current points are equal or more then the neededpoints the points shall reset and the level shall raise!
          */
         function LEVELUP() {
-            if (curPoints >= neededPoints) {
-
-                client.points.inc(key, `level`); //raising level by 1
-
-                client.points.set(key, 0, `points`); //resetting points
-
                 const newLevel = client.points.get(key, `level`); //get current NEW level
                 const newPoints = client.points.get(key, `points`); //get current NEW points
-
-                /**
-                 * HARDEN UP THE NEXT LEVEL UP
-                 * @info The neededpoints shall raise always, when the newLevel is divideable by 4, at levels: 4,8,12,16,20,24,28,32,36,40,44,...
-                 */
-                if (newLevel % 4 === 0)
-                    client.points.math(key, `+`, 100, `neededpoints`)
-
                 const newneededPoints = client.points.get(key, `neededpoints`); //get NEW needed Points
 
-                //THE INFORMATION EMBED 
+                //THE INFORMATION EMBED
                 const embed = new Discord.MessageEmbed()
                     .setAuthor(`Ranking of:  ${message.author.tag}`, message.member.user.displayAvatarURL({
                         dynamic: true
@@ -241,13 +233,12 @@ module.exports = function (client) {
                     .setDescription(`You've leveled up to Level: **\`${newLevel}\`**! (Points: \`${newPoints}\` / \`${newneededPoints}\`) `)
                     .setColor(embedcolor);
                 //send ping and embed message
-                message.channel.send(message.author, embed);
-            }
+                message.reply(embed);
         }
-        LEVELUP();
+
 
         /**
-         * @param { FUNCTIONS AREA } 
+         * @param { FUNCTIONS AREA }
          * @info FUNCTIONS
          * @info Every command leads into a single function, which may or may not be able to work together!
          */
@@ -336,7 +327,7 @@ module.exports = function (client) {
             if(isNaN(maxnum)) {
                 console.log("maximum_leaderboard NOT A NUMBER")
                 maxnum = 50;}
-            if (maxnum > sorted.length) 
+            if (maxnum > sorted.length)
                 maxnum = sorted.length + (10 - Number(String(sorted.length/10).slice(2)));
             if(maxnum < 10) maxnum = 10;
             for (let i = 10; i <= maxnum; i += 10) {
@@ -429,7 +420,7 @@ module.exports = function (client) {
                 message.reply("PLEASE ADD A RANKUSER!");
             }
         }
-        
+
         function setglobalxpcounter(){
             try {
                 if (!args[0]) return message.reply("PLEASE ADD POINTS TO ADD! Usage: `setglobalxpcounter 2`");
@@ -478,7 +469,7 @@ module.exports = function (client) {
                         const newneededPoints = client.points.get(key, `neededpoints`); //get NEW needed Points
                         const newPoints = client.points.get(key, `points`); //get current NEW points
 
-                        //THE INFORMATION EMBED 
+                        //THE INFORMATION EMBED
                         const embed = new Discord.MessageEmbed()
                             .setAuthor(`Ranking of:  ${rankuser.tag}`, rankuser.displayAvatarURL({
                                 dynamic: true
@@ -538,7 +529,7 @@ module.exports = function (client) {
                         const newneededPoints = client.points.get(key, `neededpoints`); //get NEW needed Points
                         const newPoints = client.points.get(key, `points`); //get current NEW points
 
-                        //THE INFORMATION EMBED 
+                        //THE INFORMATION EMBED
                         const embed = new Discord.MessageEmbed()
                             .setAuthor(`Ranking of:  ${rankuser.tag}`, rankuser.displayAvatarURL({
                                 dynamic: true
@@ -604,7 +595,7 @@ module.exports = function (client) {
                         const newneededPoints = client.points.get(key, `neededpoints`); //get NEW needed Points
                         const newPoints = client.points.get(key, `points`); //get current NEW points
 
-                        //THE INFORMATION EMBED 
+                        //THE INFORMATION EMBED
                         const embed = new Discord.MessageEmbed()
                             .setAuthor(`Ranking of:  ${rankuser.tag}`, rankuser.displayAvatarURL({
                                 dynamic: true
@@ -662,7 +653,7 @@ module.exports = function (client) {
                 const newneededPoints = client.points.get(key, `neededpoints`); //get NEW needed Points
                 const newPoints = client.points.get(key, `points`); //get current NEW points
 
-                //THE INFORMATION EMBED 
+                //THE INFORMATION EMBED
                 const embed = new Discord.MessageEmbed()
                     .setAuthor(`Ranking of:  ${rankuser.tag}`, rankuser.displayAvatarURL({
                         dynamic: true
@@ -712,7 +703,7 @@ module.exports = function (client) {
                 const newneededPoints = client.points.get(key, `neededpoints`); //get NEW needed Points
 
                 const newPoints = client.points.get(key, `points`); //get current NEW points
-                //THE INFORMATION EMBED 
+                //THE INFORMATION EMBED
                 const embed = new Discord.MessageEmbed()
                     .setAuthor(`Ranking of:  ${rankuser.tag}`, rankuser.displayAvatarURL({
                         dynamic: true
@@ -766,7 +757,7 @@ module.exports = function (client) {
                 const newneededPoints = client.points.get(key, `neededpoints`); //get NEW needed Points
                 const newPoints = client.points.get(key, `points`); //get current NEW points
 
-                //THE INFORMATION EMBED 
+                //THE INFORMATION EMBED
                 const embed = new Discord.MessageEmbed()
                     .setAuthor(`Ranking of:  ${rankuser.tag}`, rankuser.displayAvatarURL({
                         dynamic: true
@@ -798,7 +789,7 @@ module.exports = function (client) {
                 let rankuser = message.mentions.users.first();
                 if (!rankuser) return message.reply("PLEASE ADD A RANKUSER!");
                 // if(rankuser.bot) return message.reply("NO BOTS!");
-                
+
                 //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
                 databasing(rankuser);
@@ -808,7 +799,7 @@ module.exports = function (client) {
                 client.points.set(key, 400, `neededpoints`) //set neededpoints to 0 for beeing sure
                 client.points.set(key, "", `oldmessage`); //set old message to 0
 
-                //THE INFORMATION EMBED 
+                //THE INFORMATION EMBED
                 const embed = new Discord.MessageEmbed()
                     .setAuthor(`Ranking of:  ${rankuser.tag}`, rankuser.displayAvatarURL({
                         dynamic: true
