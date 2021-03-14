@@ -183,7 +183,6 @@ module.exports = function (client) {
 
             function addingpoints(toaddpoints, leftpoints) {
                 if (toaddpoints >= leftpoints) {
-                    LEVELUP();
                     client.points.set(thekey ? thekey : key, 0, `points`); //set points to 0
                     client.points.inc(thekey ? thekey : key, `level`); //add 1 to level
                      //get current NEW level
