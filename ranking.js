@@ -56,7 +56,7 @@ module.exports = function (client) {
 
             switch (command) {
                 case `rank`:
-                    rank();
+                    rank(message.mentions.users.first()||message.author);
                     break;
                     /////////////////////////////////
                 case `leaderboard`:
